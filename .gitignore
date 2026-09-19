@@ -1,0 +1,77 @@
+# =========================
+# CodeForge AI - Git Ignore
+# =========================
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
+.npm/
+*.tsbuildinfo
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# Test / coverage output
+coverage/
+.pytest_cache/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-data/
+
+# Ollama / local AI artifacts
+ollama/
+models/
+
+# Generated files
+generated/
+artifacts/
+reports/
+
+# Secrets / credentials
+secrets/
+credentials/
