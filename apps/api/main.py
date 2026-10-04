@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from config import settings
 from routes.health import router as health_router
 from routes.projects import router as projects_router
 from routes.repositories import router as repositories_router
 from routes.llm import router as llm_router
 from routes.tasks import router as tasks_router
+from routes.agents import router as agents_router
+
+
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
@@ -17,22 +21,32 @@ app.include_router(
     health_router,
     prefix="/api/v1",
 )
+
 app.include_router(
     projects_router,
     prefix="/api/v1",
 )
+
 app.include_router(
     repositories_router,
     prefix="/api/v1",
 )
+
 app.include_router(
     tasks_router,
     prefix="/api/v1",
 )
+
 app.include_router(
     llm_router,
     prefix="/api/v1",
 )
+
+app.include_router(
+    agents_router,
+    prefix="/api/v1",
+)
+
 
 app.add_middleware(
     CORSMiddleware,
