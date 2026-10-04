@@ -3,11 +3,15 @@ from typing import Any
 
 from core.llm.service import llm_service
 from core.llm.types import LLMRequest, LLMResponse
+from core.tools.service import ToolService
 
 from .types import AgentResult
 
 
 class BaseAgent(ABC):
+
+    def __init__(self):
+        self.tool_service: ToolService | None = None
 
     @property
     @abstractmethod
@@ -39,7 +43,7 @@ class BaseAgent(ABC):
                 context=context or {},
             )
 
-            response: LLMResponse = await llm_service.generate(request)
+            response: LLMResponse = await self.generate(request)
 
             return AgentResult(
                 agent_name=self.agent_name,
@@ -71,3 +75,9 @@ class BaseAgent(ABC):
         request: LLMRequest,
     ) -> LLMResponse:
         raise NotImplementedError
+
+    def attach_tool_service(
+        self,
+        tool_service: ToolService,
+    ) -> None:
+        self.tool_service = tool_service
