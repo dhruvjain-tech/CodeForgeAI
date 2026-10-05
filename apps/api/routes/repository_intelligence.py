@@ -1,4 +1,3 @@
-from models.repository import Repository
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from core.repository.service import repository_analysis_service
 from database import get_db
+from models.repository import Repository
 from models.repository_analysis import RepositoryAnalysis
 from services.repository_analysis_service import (
     get_latest_repository_analysis,
@@ -90,13 +90,14 @@ async def analyze_and_save_repository(
     request: RepositoryAnalyzeAndSaveRequest,
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+
     repository = (
-    db.query(Repository)
-    .filter(
-        Repository.id == request.repository_id
+        db.query(Repository)
+        .filter(
+            Repository.id == request.repository_id
+        )
+        .first()
     )
-    .first()
-)
 
     if repository is None:
         raise HTTPException(
@@ -137,6 +138,7 @@ def get_analysis(
     analysis_id: int,
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+
     analysis = (
         db.query(RepositoryAnalysis)
         .filter(
@@ -192,11 +194,13 @@ def get_analysis(
         ],
     }
 
+
 @router.get("/repositories/{repository_id}/analyses")
 def list_repository_analyses(
     repository_id: int,
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
+
     analyses = get_repository_analyses(
         db,
         repository_id,
@@ -221,6 +225,7 @@ def get_latest_analysis(
     repository_id: int,
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+
     analysis = get_latest_repository_analysis(
         db,
         repository_id,

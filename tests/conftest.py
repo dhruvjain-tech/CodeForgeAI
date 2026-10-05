@@ -1,26 +1,28 @@
-import pytest
+import os
 
+import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from fastapi.testclient import TestClient
+
+os.environ.setdefault(
+    "DATABASE_URL",
+    "sqlite:///./test.db",
+)
 
 from database import Base, get_db
 from main import app
-from models import Project, Repository, Task
+from models import Project, Repository
 
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
-
 engine = create_engine(
     TEST_DATABASE_URL,
-    connect_args={
-        "check_same_thread": False,
-    },
+    connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
-
 
 TestingSessionLocal = sessionmaker(
     bind=engine,
@@ -40,6 +42,19 @@ def db_session():
     finally:
         db.close()
         Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture
+def client(db_session):
+    def override_get_db():
+        yield db_session
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    with TestClient(app) as test_client:
+        yield test_client
+
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture
@@ -68,19 +83,3 @@ def repository(db_session):
     db_session.refresh(repository)
 
     return repository
-
-
-@pytest.fixture
-def client(db_session):
-    def override_get_db():
-        try:
-            yield db_session
-        finally:
-            pass
-
-    app.dependency_overrides[get_db] = override_get_db
-
-    with TestClient(app) as test_client:
-        yield test_client
-
-    app.dependency_overrides.clear()

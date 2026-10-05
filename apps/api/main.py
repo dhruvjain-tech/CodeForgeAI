@@ -8,7 +8,15 @@ from routes.repositories import router as repositories_router
 from routes.llm import router as llm_router
 from routes.tasks import router as tasks_router
 from routes.agents import router as agents_router
-
+from routes.repository_intelligence import (
+    router as repository_intelligence_router,
+)
+from routes.repository_search import (
+    router as repository_search_router,
+)
+from routes.technology_advisor import (
+    router as technology_advisor_router,
+)
 
 app = FastAPI(
     title=settings.app_name,
@@ -47,6 +55,11 @@ app.include_router(
     prefix="/api/v1",
 )
 
+app.include_router(
+    repository_intelligence_router,
+    prefix="/api/v1",
+)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,4 +70,16 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+
+
+)
+
+app.include_router(
+    repository_search_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    technology_advisor_router,
+    prefix="/api/v1",
 )
