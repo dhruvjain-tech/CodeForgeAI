@@ -1,5 +1,7 @@
 from typing import Any
 
+from core.tools.runtime import tool_service
+
 from .architect import ArchitectAgent
 from .debugger import DebuggerAgent
 from .developer import DeveloperAgent
@@ -45,6 +47,7 @@ def create_default_registry() -> AgentRegistry:
     ]
 
     for agent in agents:
+        agent.attach_tool_service(tool_service)
         registry.register(agent)
 
     return registry

@@ -4,7 +4,7 @@ from typing import Any
 
 @dataclass
 class SandboxConfig:
-    image: str = "python:3.13-slim"
+    image: str = "codeforge-sandbox:latest"
     timeout_seconds: int = 30
     memory_limit: str = "512m"
     cpu_limit: float = 1.0
